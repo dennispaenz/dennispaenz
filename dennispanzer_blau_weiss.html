@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dennis Panzer · Fotograf aus Heidelberg</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:wght@300;400&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --white:   #ffffff;
+  --bg:      #f4f7fb;
+  --surface: #eaf0f7;
+  --navy:    #0d1b2a;
+  --navy2:   #162338;
+  --steel:   #3d7eb5;
+  --steel2:  #2e6a9e;
+  --steelL:  rgba(61,126,181,0.12);
+  --steelB:  rgba(61,126,181,0.22);
+  --text:    #0d1b2a;
+  --muted:   #587a96;
+  --serif:   'Cormorant Garamond', Georgia, serif;
+  --sans:    'DM Sans', sans-serif;
+}
+html { scroll-behavior:smooth; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--sans);
+  font-weight: 300;
+  line-height: 1.6;
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* CURSOR */
+.cursor {
+  position:fixed; width:8px; height:8px;
+  background:var(--steel); border-radius:50%;
+  pointer-events:none; z-index:9999;
+  transform:translate(-50%,-50%);
+  transition:width .3s,height .3s;
+}
+.cursor-ring {
+  position:fixed; width:36px; height:36px;
+  border:1px solid rgba(61,126,181,.45);
+  border-radius:50%; pointer-events:none; z-index:9998;
+  transform:translate(-50%,-50%);
+  transition:width .3s,height .3s,opacity .3s;
+}
+body:has(a:hover) .cursor,
+body:has(button:hover) .cursor { width:14px; height:14px; }
+body:has(a:hover) .cursor-ring,
+body:has(button:hover) .cursor-ring { width:56px; height:56px; opacity:.5; }
+
+/* NAV */
+nav {
+  position:fixed; top:0; left:0; right:0; z-index:100;
+  display:flex; align-items:center; justify-content:space-between;
+  padding:24px 48px;
+  background:rgba(255,255,255,0.93);
+  backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--steelB);
+}
+.nav-logo {
+  font-family:var(--serif); font-size:1.1rem; font-weight:300;
+  letter-spacing:.15em; text-transform:uppercase;
+  color:var(--navy); text-decoration:none;
+  opacity:0; animation:fadeDown .8s ease .2s forwards;
+}
+.nav-logo span { color:var(--steel); }
+.nav-links {
+  display:flex; gap:40px; list-style:none;
+  opacity:0; animation:fadeDown .8s ease .4s forwards;
+}
+.nav-links a {
+  font-size:.72rem; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--muted); text-decoration:none; transition:color .3s;
+  position:relative;
+}
+.nav-links a::after {
+  content:''; position:absolute; bottom:-3px; left:0; right:100%;
+  height:1px; background:var(--steel); transition:right .3s;
+}
+.nav-links a:hover { color:var(--navy); }
+.nav-links a:hover::after { right:0; }
+
+/* HERO */
+.hero {
+  min-height:100vh;
+  display:grid; grid-template-columns:1fr 1fr;
+  overflow:hidden;
+}
+.hero-left {
+  display:flex; flex-direction:column; justify-content:center;
+  padding:120px 56px 80px;
+  background:var(--white);
+  position:relative; z-index:2;
+}
+.hero-left::before {
+  content:''; position:absolute; inset:0;
+  background-image:
+    linear-gradient(var(--steelB) 1px,transparent 1px),
+    linear-gradient(90deg,var(--steelB) 1px,transparent 1px);
+  background-size:52px 52px;
+  opacity:.3; pointer-events:none;
+}
+.hero-eyebrow {
+  font-size:.68rem; letter-spacing:.28em; text-transform:uppercase;
+  color:var(--steel); margin-bottom:24px;
+  opacity:0; animation:fadeUp 1s ease .6s forwards;
+}
+.hero-title {
+  font-family:var(--serif);
+  font-size:clamp(3.2rem,5.5vw,5rem);
+  font-weight:300; line-height:1.05; color:var(--navy);
+  opacity:0; animation:fadeUp 1s ease .8s forwards;
+}
+.hero-title em { font-style:italic; color:var(--steel); }
+.hero-sub {
+  margin-top:28px; font-size:.9rem;
+  color:var(--muted); line-height:1.85; max-width:360px;
+  opacity:0; animation:fadeUp 1s ease 1s forwards;
+}
+.hero-cta {
+  margin-top:44px; display:flex; gap:20px; align-items:center;
+  opacity:0; animation:fadeUp 1s ease 1.2s forwards;
+}
+.btn-primary {
+  display:inline-block; padding:14px 36px;
+  background:var(--steel); color:#fff;
+  font-family:var(--sans); font-size:.72rem;
+  letter-spacing:.18em; text-transform:uppercase;
+  text-decoration:none; font-weight:400;
+  transition:background .3s,transform .2s;
+}
+.btn-primary:hover { background:var(--steel2); transform:translateY(-1px); }
+.btn-ghost {
+  font-size:.72rem; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--muted); text-decoration:none;
+  display:flex; align-items:center; gap:10px; transition:color .3s;
+}
+.btn-ghost:hover { color:var(--steel); }
+.btn-ghost::after { content:'→'; transition:transform .3s; }
+.btn-ghost:hover::after { transform:translateX(4px); }
+
+.hero-right {
+  position:relative; overflow:hidden;
+  background:linear-gradient(145deg,#0d1b2a 0%,#162338 55%,#0d1b2a 100%);
+}
+.hero-right::before {
+  content:''; position:absolute; inset:0;
+  background:repeating-linear-gradient(
+    -55deg, transparent, transparent 58px,
+    rgba(61,126,181,.05) 58px, rgba(61,126,181,.05) 59px
+  );
+}
+.hero-img-placeholder {
+  width:100%; height:100%;
+  display:flex; flex-direction:column;
+  align-items:center; justify-content:center; gap:16px;
+  position:relative; z-index:1;
+}
+.hero-img-placeholder span {
+  font-family:var(--serif); font-size:.9rem;
+  font-style:italic; color:rgba(255,255,255,.28);
+}
+.hero-scroll {
+  position:absolute; bottom:40px; left:48px;
+  display:flex; flex-direction:column; align-items:flex-start; gap:10px;
+  opacity:0; animation:fadeIn 1s ease 1.8s forwards; z-index:3;
+}
+.hero-scroll span { font-size:.62rem; letter-spacing:.22em; text-transform:uppercase; color:var(--muted); }
+.scroll-line {
+  width:1px; height:40px;
+  background:linear-gradient(to bottom,var(--steel),transparent);
+  animation:scrollPulse 2s ease-in-out infinite;
+}
+
+/* SECTION */
+section { padding:100px 48px; }
+.section-label {
+  font-size:.65rem; letter-spacing:.28em; text-transform:uppercase;
+  color:var(--steel); margin-bottom:14px;
+}
+.section-title {
+  font-family:var(--serif);
+  font-size:clamp(2.2rem,4vw,3.2rem);
+  font-weight:300; line-height:1.1; color:var(--navy);
+}
+.section-title em { font-style:italic; color:var(--steel); }
+.line-accent {
+  display:block; width:48px; height:2px;
+  background:var(--steel); margin:26px 0;
+}
+
+/* ABOUT */
+.about { background:var(--white); }
+.about-inner {
+  max-width:1200px; margin:0 auto;
+  display:grid; grid-template-columns:1fr 1.4fr; gap:80px; align-items:center;
+}
+.about-img { aspect-ratio:3/4; position:relative; }
+.about-img-inner {
+  width:100%; height:100%;
+  background:linear-gradient(160deg,#dce8f2 0%,#c2d8ec 100%);
+  border:1px solid var(--steelB);
+  display:flex; align-items:center; justify-content:center;
+  flex-direction:column; gap:12px;
+  position:relative; z-index:1;
+}
+.about-img-inner span {
+  font-family:var(--serif); font-size:.85rem;
+  font-style:italic; color:var(--muted);
+}
+.about-img::before {
+  content:''; position:absolute;
+  top:16px; left:16px; right:-16px; bottom:-16px;
+  background:var(--steelL); border:1px solid var(--steelB); z-index:0;
+}
+.about-text p { font-size:.95rem; color:var(--muted); line-height:1.9; margin-bottom:20px; }
+.about-stats {
+  display:grid; grid-template-columns:repeat(3,1fr); gap:24px;
+  margin-top:44px; padding-top:36px;
+  border-top:1px solid var(--steelB);
+}
+.stat-num {
+  font-family:var(--serif); font-size:2.8rem;
+  font-weight:300; color:var(--steel); line-height:1;
+}
+.stat-label {
+  font-size:.7rem; letter-spacing:.12em; color:var(--muted);
+  margin-top:8px; text-transform:uppercase;
+}
+
+/* PORTFOLIO */
+.portfolio { background:var(--surface); }
+.portfolio-header {
+  max-width:1200px; margin:0 auto 56px;
+  display:flex; align-items:flex-end; justify-content:space-between;
+}
+.portfolio-filter { display:flex; gap:4px; }
+.filter-btn {
+  padding:8px 20px; background:transparent;
+  border:1px solid var(--steelB);
+  color:var(--muted); font-family:var(--sans);
+  font-size:.7rem; letter-spacing:.14em; text-transform:uppercase;
+  cursor:none; transition:all .2s;
+}
+.filter-btn.active, .filter-btn:hover {
+  background:var(--steel); border-color:var(--steel); color:#fff;
+}
+.portfolio-grid {
+  max-width:1200px; margin:0 auto;
+  display:grid; grid-template-columns:repeat(12,1fr); gap:14px;
+}
+.grid-item {
+  background:var(--white); overflow:hidden;
+  position:relative; cursor:none;
+  border:1px solid var(--steelB);
+}
+.grid-item:nth-child(1) { grid-column:span 7; height:560px; }
+.grid-item:nth-child(2) { grid-column:span 5; height:270px; }
+.grid-item:nth-child(3) { grid-column:span 5; height:270px; }
+.grid-item:nth-child(4) { grid-column:span 4; height:340px; }
+.grid-item:nth-child(5) { grid-column:span 4; height:340px; }
+.grid-item:nth-child(6) { grid-column:span 4; height:340px; }
+.grid-placeholder {
+  width:100%; height:100%;
+  background:linear-gradient(160deg,#dce8f2 0%,#c2d8ec 100%);
+  display:flex; align-items:center; justify-content:center;
+  transition:transform .6s cubic-bezier(.25,.46,.45,.94);
+}
+.grid-item:hover .grid-placeholder { transform:scale(1.04); }
+.grid-overlay {
+  position:absolute; inset:0;
+  background:linear-gradient(to top,rgba(13,27,42,.75) 0%,transparent 55%);
+  opacity:0; transition:opacity .4s;
+  display:flex; align-items:flex-end; padding:24px;
+}
+.grid-item:hover .grid-overlay { opacity:1; }
+.grid-label {
+  font-family:var(--serif); font-size:1.1rem;
+  font-style:italic; color:#fff;
+}
+
+/* SERVICES */
+.services { background:var(--navy); }
+.services .section-label { color:rgba(100,165,220,.9); }
+.services .section-title { color:#fff; }
+.services .section-title em { color:#7ab3d8; }
+.services-inner { max-width:1200px; margin:0 auto; }
+.services-grid {
+  display:grid; grid-template-columns:repeat(3,1fr);
+  gap:2px; margin-top:56px;
+}
+.service-card {
+  padding:48px 40px; background:var(--navy2);
+  border:1px solid rgba(61,126,181,.2);
+  position:relative; overflow:hidden; transition:border-color .3s;
+}
+.service-card:hover { border-color:rgba(61,126,181,.55); }
+.service-card::before {
+  content:''; position:absolute; top:0; left:0; right:100%;
+  height:2px; background:var(--steel); transition:right .4s;
+}
+.service-card:hover::before { right:0; }
+.service-num {
+  font-family:var(--serif); font-size:3rem;
+  font-weight:300; color:rgba(61,126,181,.2); line-height:1; margin-bottom:24px;
+}
+.service-title {
+  font-family:var(--serif); font-size:1.4rem;
+  font-weight:300; margin-bottom:16px; color:#fff;
+}
+.service-desc { font-size:.88rem; color:rgba(255,255,255,.4); line-height:1.8; margin-bottom:28px; }
+.service-price {
+  font-family:var(--serif); font-size:1.05rem;
+  color:#7ab3d8; font-style:italic;
+}
+
+/* CONTACT */
+.contact { background:var(--white); }
+.contact-inner {
+  max-width:1200px; margin:0 auto;
+  display:grid; grid-template-columns:1fr 1fr; gap:80px; align-items:start;
+}
+.contact-info p { font-size:.95rem; color:var(--muted); line-height:1.9; margin-bottom:40px; }
+.contact-details { display:flex; flex-direction:column; gap:20px; }
+.contact-item { display:flex; align-items:center; gap:20px; }
+.contact-item-label {
+  font-size:.65rem; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--steel); min-width:70px;
+}
+.contact-item-val { font-size:.92rem; color:var(--navy); }
+.contact-form { display:flex; flex-direction:column; gap:14px; }
+.form-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+.form-field {
+  width:100%; padding:14px 18px;
+  background:var(--surface); border:1px solid var(--steelB);
+  color:var(--navy); font-family:var(--sans); font-size:.88rem;
+  outline:none; transition:border-color .3s;
+}
+.form-field:focus { border-color:var(--steel); }
+.form-field::placeholder { color:var(--muted); }
+textarea.form-field { min-height:120px; resize:vertical; }
+.form-submit {
+  width:100%; padding:16px;
+  background:var(--steel); color:#fff;
+  font-family:var(--sans); font-size:.72rem;
+  letter-spacing:.2em; text-transform:uppercase;
+  font-weight:400; border:none; cursor:none;
+  transition:background .3s,transform .2s;
+}
+.form-submit:hover { background:var(--steel2); transform:translateY(-1px); }
+
+/* FOOTER */
+footer {
+  padding:28px 48px; background:var(--navy);
+  display:flex; align-items:center; justify-content:space-between;
+  border-top:1px solid rgba(61,126,181,.15);
+}
+footer p { font-size:.72rem; color:rgba(255,255,255,.3); letter-spacing:.08em; }
+.footer-links { display:flex; gap:28px; }
+.footer-links a { font-size:.72rem; color:rgba(255,255,255,.3); text-decoration:none; transition:color .3s; }
+.footer-links a:hover { color:#7ab3d8; }
+
+/* ANIMATIONS */
+@keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeDown { from{opacity:0;transform:translateY(-12px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+@keyframes scrollPulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+.reveal { opacity:0; transform:translateY(28px); transition:opacity .8s ease,transform .8s ease; }
+.reveal.visible { opacity:1; transform:translateY(0); }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<nav>
+  <a href="#" class="nav-logo">Dennis <span>Panzer</span></a>
+  <ul class="nav-links">
+    <li><a href="#about">Über mich</a></li>
+    <li><a href="#portfolio">Portfolio</a></li>
+    <li><a href="#services">Leistungen</a></li>
+    <li><a href="#contact">Kontakt</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <p class="hero-eyebrow">Fotograf · Heidelberg</p>
+    <h1 class="hero-title">Momente,<br>die <em>bleiben.</em></h1>
+    <p class="hero-sub">Landschaft, Business, Portrait — ich halte fest, was Bedeutung hat. Authentisch, handwerklich präzise, mit Leidenschaft seit über 15 Jahren.</p>
+    <div class="hero-cta">
+      <a href="#contact" class="btn-primary">Anfrage stellen</a>
+      <a href="#portfolio" class="btn-ghost">Portfolio ansehen</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-img-placeholder">
+      <svg width="72" height="72" viewBox="0 0 80 80" fill="none">
+        <rect x="8" y="20" width="64" height="48" rx="3" stroke="#3d7eb5" stroke-width="1.5"/>
+        <circle cx="40" cy="44" r="14" stroke="#3d7eb5" stroke-width="1.5"/>
+        <circle cx="40" cy="44" r="6" stroke="#3d7eb5" stroke-width="1"/>
+        <rect x="28" y="14" width="24" height="10" rx="2" stroke="#3d7eb5" stroke-width="1.5"/>
+      </svg>
+      <span>Dein Hero-Bild hier</span>
+    </div>
+  </div>
+  <div class="hero-scroll">
+    <span>Scroll</span>
+    <div class="scroll-line"></div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="about" id="about">
+  <div class="about-inner">
+    <div class="about-img reveal">
+      <div class="about-img-inner">
+        <svg width="56" height="56" viewBox="0 0 80 80" fill="none">
+          <rect x="8" y="20" width="64" height="48" rx="3" stroke="#3d7eb5" stroke-width="1.5"/>
+          <circle cx="40" cy="44" r="12" stroke="#3d7eb5" stroke-width="1"/>
+        </svg>
+        <span>Portrait-Foto hier</span>
+      </div>
+    </div>
+    <div class="about-text reveal">
+      <p class="section-label">Über mich</p>
+      <h2 class="section-title">Hi, ich bin<br><em>Dennis.</em></h2>
+      <span class="line-accent"></span>
+      <p>36 Jahre, leidenschaftlicher Fotograf aus Heidelberg. Was vor über 15 Jahren als Hobby mit Landschaftsaufnahmen begann, ist heute mein kreativer Ausgleich und meine zweite große Berufung.</p>
+      <p>Ob Businessporträt, Landschaft, Event oder persönliche Momente — mich fasziniert die Vielfalt. Für mich zählt nicht nur das perfekte Bild, sondern die Geschichte dahinter.</p>
+      <div class="about-stats">
+        <div><div class="stat-num">15+</div><div class="stat-label">Jahre Erfahrung</div></div>
+        <div><div class="stat-num">4</div><div class="stat-label">Bereiche</div></div>
+        <div><div class="stat-num">HD</div><div class="stat-label">Heidelberg</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PORTFOLIO -->
+<section class="portfolio" id="portfolio">
+  <div class="portfolio-header reveal">
+    <div>
+      <p class="section-label">Ausgewählte Arbeiten</p>
+      <h2 class="section-title">Port<em>folio</em></h2>
+    </div>
+    <div class="portfolio-filter">
+      <button class="filter-btn active">Alle</button>
+      <button class="filter-btn">Landschaft</button>
+      <button class="filter-btn">Business</button>
+      <button class="filter-btn">Portrait</button>
+    </div>
+  </div>
+  <div class="portfolio-grid reveal">
+    <div class="grid-item">
+      <div class="grid-placeholder">
+        <svg width="48" height="48" viewBox="0 0 80 80" fill="none">
+          <rect x="8" y="20" width="64" height="48" rx="3" stroke="#3d7eb5" stroke-width="1"/>
+          <circle cx="40" cy="44" r="12" stroke="#3d7eb5" stroke-width="1"/>
+        </svg>
+      </div>
+      <div class="grid-overlay"><span class="grid-label">Landschaft · Neckartal</span></div>
+    </div>
+    <div class="grid-item"><div class="grid-placeholder"></div><div class="grid-overlay"><span class="grid-label">Business Portrait</span></div></div>
+    <div class="grid-item"><div class="grid-placeholder"></div><div class="grid-overlay"><span class="grid-label">Architektur · Heidelberg</span></div></div>
+    <div class="grid-item"><div class="grid-placeholder"></div><div class="grid-overlay"><span class="grid-label">Portrait</span></div></div>
+    <div class="grid-item"><div class="grid-placeholder"></div><div class="grid-overlay"><span class="grid-label">Event</span></div></div>
+    <div class="grid-item"><div class="grid-placeholder"></div><div class="grid-overlay"><span class="grid-label">Landschaft</span></div></div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services" id="services">
+  <div class="services-inner">
+    <div class="reveal">
+      <p class="section-label">Was ich anbiete</p>
+      <h2 class="section-title">Leis<em>tungen</em></h2>
+    </div>
+    <div class="services-grid reveal">
+      <div class="service-card">
+        <div class="service-num">01</div>
+        <h3 class="service-title">Business & Corporate</h3>
+        <p class="service-desc">Professionelle Mitarbeiterporträts, Unternehmensreportagen und Headshots. Authentisch, repräsentativ, zeitlos.</p>
+        <div class="service-price">ab Anfrage</div>
+      </div>
+      <div class="service-card">
+        <div class="service-num">02</div>
+        <h3 class="service-title">Portrait & Reportage</h3>
+        <p class="service-desc">Persönliche Porträts und Reportagen, die Charakter zeigen. Ungestellt, lebendig, mit Atmosphäre.</p>
+        <div class="service-price">ab Anfrage</div>
+      </div>
+      <div class="service-card">
+        <div class="service-num">03</div>
+        <h3 class="service-title">Landschaft & Architektur</h3>
+        <p class="service-desc">Heidelberg und die Region in schönsten Lichtstimmungen. Auch für Immobilien und Projekte.</p>
+        <div class="service-price">ab Anfrage</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact" id="contact">
+  <div class="contact-inner">
+    <div class="reveal">
+      <p class="section-label">Lass uns reden</p>
+      <h2 class="section-title">Kon<em>takt</em></h2>
+      <span class="line-accent"></span>
+      <div class="contact-info">
+        <p>Du hast ein Projekt im Kopf? Ich freue mich auf deine Nachricht — schreib mir einfach, was du dir vorstellst.</p>
+      </div>
+      <div class="contact-details">
+        <div class="contact-item"><span class="contact-item-label">E-Mail</span><span class="contact-item-val">contact@dennispanzer.com</span></div>
+        <div class="contact-item"><span class="contact-item-label">Telefon</span><span class="contact-item-val">+49 151 18887009</span></div>
+        <div class="contact-item"><span class="contact-item-label">Standort</span><span class="contact-item-val">Heidelberg & Region</span></div>
+      </div>
+    </div>
+    <div class="reveal">
+      <div class="contact-form">
+        <div class="form-row">
+          <input type="text" class="form-field" placeholder="Dein Name">
+          <input type="email" class="form-field" placeholder="E-Mail Adresse">
+        </div>
+        <input type="text" class="form-field" placeholder="Betreff / Art des Projekts">
+        <textarea class="form-field" placeholder="Erzähl mir von deinem Projekt …"></textarea>
+        <button class="form-submit">Nachricht senden</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <p>© 2026 Dennis Panzer Photography · Heidelberg</p>
+  <div class="footer-links">
+    <a href="#">Impressum</a>
+    <a href="#">Datenschutz</a>
+    <a href="https://www.instagram.com/dennispaenz" target="_blank">Instagram</a>
+  </div>
+</footer>
+
+<script>
+const cursor = document.getElementById('cursor');
+const ring = document.getElementById('cursorRing');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;});
+function animateCursor(){
+  cursor.style.left=mx+'px';cursor.style.top=my+'px';
+  rx+=(mx-rx)*.12;ry+=(my-ry)*.12;
+  ring.style.left=rx+'px';ring.style.top=ry+'px';
+  requestAnimationFrame(animateCursor);
+}
+animateCursor();
+
+const reveals=document.querySelectorAll('.reveal');
+const observer=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('visible');});
+},{threshold:.12});
+reveals.forEach(r=>observer.observe(r));
+
+document.querySelectorAll('.filter-btn').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+  });
+});
+</script>
+</body>
+</html>
